@@ -13,7 +13,7 @@ import com.jackie.arcmenu.R;
  * Created by Jackie on 2016/1/10.
  * 扇形菜单
  */
-public class ArcMenu extends ViewGroup {
+public class ArcMenu extends ViewGroup implements View.OnClickListener {
     private enum POSITION { LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM};
     private POSITION mPosition = POSITION.RIGHT_BOTTOM;
     private int mRadius;
@@ -77,7 +77,81 @@ public class ArcMenu extends ViewGroup {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            measureChild(getChildAt(i), widthMeasureSpec, heightMeasureSpec);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (changed) {
+            layoutMainButton();
+            layoutChild();
+        }
+    }
+
+    private void layoutMainButton() {
+        //布局主Button
+        mMainButton = getChildAt(0);
+        mMainButton.setOnClickListener(this);
+
+        int left = 0;
+        int top = 0;
+
+        int width = mMainButton.getMeasuredWidth();
+        int height = mMainButton.getMeasuredHeight();
+
+        switch (mPosition) {
+            case LEFT_TOP:
+                left = 0;
+                top = 0;
+                break;
+            case LEFT_BOTTOM:
+                left = 0;
+                top = getMeasuredHeight() - height;
+                break;
+            case RIGHT_TOP:
+                left = getMeasuredWidth() - width;
+                top = 0;
+                break;
+            case RIGHT_BOTTOM:
+                left = getMeasuredWidth() - width;
+                top = getMeasuredHeight() - height;
+                break;
+        }
+
+        mMainButton.layout(left, top, left + width, top + height);
+    }
+
+    private void layoutChild() {
+        int childCount = getChildCount();  //包括主按钮
+        for (int i = 0; i < childCount - 1; i++) {
+            View child = getChildAt(i + 1); //主按钮是第0个，必须跳过布局
+
+            int l = (int) (mRadius * Math.sin(Math.PI / 2 / (childCount - 2) * i));
+            int t = (int) (mRadius * Math.cos(Math.PI / 2 / (childCount - 2) * i));
+
+            int width = child.getMeasuredWidth();
+            int height = child.getMeasuredHeight();
+
+            //当菜单的位置在坐下或者右下
+            if (mPosition == POSITION.LEFT_BOTTOM || mPosition == POSITION.RIGHT_BOTTOM) {
+                t = getMeasuredHeight() - height - t;
+            }
+
+            //当菜单的位置在右上或者右下
+            if (mPosition == POSITION.RIGHT_TOP || mPosition == POSITION.RIGHT_BOTTOM) {
+                l = getMeasuredWidth() - width - l;
+            }
+
+            child.layout(l, t, l + width, t + height);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
     }
 }

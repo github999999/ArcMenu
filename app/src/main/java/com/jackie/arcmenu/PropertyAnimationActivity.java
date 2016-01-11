@@ -2,10 +2,7 @@ package com.jackie.arcmenu;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
@@ -22,18 +19,7 @@ public class PropertyAnimationActivity extends AppCompatActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        setContentView(R.layout.activity_property_animation);
 
         for (int i = 0; i < mImageId.length; i++) {
             ImageView imageView = (ImageView) findViewById(mImageId[i]);
@@ -71,7 +57,7 @@ public class PropertyAnimationActivity extends AppCompatActivity implements View
          PropertyValuesHolder xHolder = PropertyValuesHolder.ofFloat("translationX", 0f, 200);
          PropertyValuesHolder yHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 200);
          PropertyValuesHolder rotationHolder = PropertyValuesHolder.ofFloat("rotation", 0f, 360);
-         ObjectAnimator.ofPropertyValuesHolder(xHolder, yHolder, rotationHolder);
+         ObjectAnimator.ofPropertyValuesHolder(imageView, xHolder, yHolder, rotationHolder);
          //方法3
          AnimatorSet animatorSet = new AnimatorSet();
          ObjectAnimator xAnimator = ObjectAnimator.ofFloat(imageView, "translationX", 0f, 200);
